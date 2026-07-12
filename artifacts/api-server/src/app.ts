@@ -1,8 +1,14 @@
 import express, { type Express } from "express";
 import cors from "cors";
-import pinoHttp from "pino-http";
+import { createRequire } from "node:module";
 import router from "./routes";
 import { logger } from "./lib/logger";
+
+// pino-http uses `export =` syntax which breaks ESM default imports when
+// esModuleInterop is absent (e.g. Vercel's tsc check).  createRequire is the
+// correct ESM-native way to consume a CommonJS `export =` module.
+const _require = createRequire(import.meta.url);
+const pinoHttp: typeof import("pino-http") = _require("pino-http");
 
 const app: Express = express();
 
