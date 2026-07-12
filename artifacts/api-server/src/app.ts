@@ -8,7 +8,9 @@ import { logger } from "./lib/logger";
 // esModuleInterop is absent (e.g. Vercel's tsc check).  createRequire is the
 // correct ESM-native way to consume a CommonJS `export =` module.
 const _require = createRequire(import.meta.url);
-const pinoHttp: typeof import("pino-http") = _require("pino-http");
+// Cast to `any` so pino-http's `export =` type never conflicts with any tsconfig variant
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pinoHttp = _require("pino-http") as any;
 
 const app: Express = express();
 
