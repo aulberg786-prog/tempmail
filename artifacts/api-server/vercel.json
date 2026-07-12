@@ -1,4 +1,4 @@
 {
-  "installCommand": "pnpm install --frozen-lockfile=false",
+  "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "echo 'no build needed — @vercel/node bundles api/index.ts directly'"
 }
