@@ -2,9 +2,7 @@
   "installCommand": "pnpm install --frozen-lockfile=false",
   "buildCommand": "echo 'no build needed — @vercel/node bundles api/index.ts directly'",
   "functions": {
-    "artifacts/api-server/api/index.ts": {
-      "runtime": "nodejs20.x"
-    }
+    "artifacts/api-server/api/index.ts": {}
   },
   "rewrites": [
     { "source": "/(.*)", "destination": "/artifacts/api-server/api/index" }
