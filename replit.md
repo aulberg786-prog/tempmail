@@ -1,36 +1,36 @@
-# [Project name]
+# Gulberg AI Temp Mail
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Free, no-signup disposable email generator: generates a temporary mail.tm address, polls the inbox automatically, and lets users read messages in a modal — all wrapped in a dark glassmorphism UI.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/gulberg-temp-mail run dev` — run the web app (Vite)
+- `pnpm --filter @workspace/api-server run dev` — run the API server
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- No secrets/DB required for this app — mail.tm is a free public API.
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Web: React + Vite, Tailwind, shadcn/ui primitives (artifact: `gulberg-temp-mail`, path `/`)
+- API: Express 5 (artifact: `api-server`, path `/api`)
+- DB: PostgreSQL + Drizzle ORM (scaffolded but unused by this app)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/gulberg-temp-mail/src/App.tsx` — the entire temp-mail UI and client logic (single component, ported from an original single-file HTML prototype at the repo root: `gulberg-ai-temp-mail.html`)
+- `artifacts/gulberg-temp-mail/src/index.css` — custom glassmorphism styles (orbs, glass cards, buttons, modal) appended after the shadcn theme layer
+- `artifacts/api-server/src/routes/tempmail.ts` — `POST /api/tempmail/generate`, creates a mail.tm account server-side and returns `{ email, token }`
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Account creation goes through the Express backend (`/api/tempmail/generate`) instead of the browser, because mail.tm rate-limits/blocks direct browser-side account creation. Once a token is issued, inbox polling (`GET /messages`) happens directly from the browser using that token.
+- The original prototype (`gulberg-ai-temp-mail.html`) is left at the repo root for reference; the live app is the React port under `artifacts/gulberg-temp-mail`.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Generates a temporary email address on load (via mail.tm), auto-refreshes the inbox every 10s with a visible countdown, lets the user copy the address, generate a new one, and open any message in a modal (sanitized HTML rendering).
 
 ## User preferences
 
@@ -38,7 +38,7 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- mail.tm occasionally returns 429/502 on account creation under load; the app retries with backoff (3s, 6s, ... capped at 20s) — this is expected, not a bug.
 
 ## Pointers
 
