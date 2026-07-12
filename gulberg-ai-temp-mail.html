@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Gulberg AI Temp Mail — Free Disposable Email</title>
+  <meta name="description" content="Gulberg AI Temp Mail — Generate a free, instant disposable email address. No signup required. Protect your real inbox from spam." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Gulberg AI Temp Mail" />
+  <meta property="og:description" content="Free disposable temporary email address generator. Protect your inbox from spam instantly." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Gulberg AI Temp Mail" />
+  <meta name="twitter:description" content="Free disposable temporary email address generator." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50:  '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.4s ease-out',
+            'slide-up': 'slideUp 0.35s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
+            'spin-slow': 'spin 2s linear infinite',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+            slideUp: { '0%': { opacity: 0, transform: 'translateY(16px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+          },
+          backdropBlur: { xs: '2px' },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Global */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #1a1040 35%, #302b63 70%, #24243e 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+
+    /* Animated background orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 12s ease-in-out infinite;
+    }
+    .bg-orb-1 { width: 520px; height: 520px; background: #6366f1; top: -150px; left: -150px; animation-delay: 0s; }
+    .bg-orb-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: -4s; }
+    .bg-orb-3 { width: 280px; height: 280px; background: #06b6d4; top: 40%; left: 50%; animation-delay: -8s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.06); }
+    }
+
+    /* Glassmorphism card */
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .glass-inner {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Email address display */
+    .email-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(14px, 2.5vw, 18px);
+      letter-spacing: 0.02em;
+      color: #a5b4fc;
+      word-break: break-all;
+    }
+
+    /* Inbox row hover */
+    .inbox-row {
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .inbox-row:hover {
+      background: rgba(99, 102, 241, 0.15) !important;
+      transform: translateX(2px);
+      box-shadow: inset 3px 0 0 #6366f1;
+    }
+    .inbox-row.unread { border-left: 3px solid #6366f1; }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-danger:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Copy tooltip */
+    .copy-tooltip {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4ade80;
+      color: #052e16;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .copy-tooltip.show { opacity: 1; }
+    .copy-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #4ade80;
+    }
+
+    /* Countdown ring */
+    .countdown-ring {
+      stroke-dasharray: 100;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .modal-overlay.open { display: flex; }
+
+    /* Email body render */
+    .email-body-container {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      overflow-x: auto;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+    .email-body-container * { max-width: 100%; }
+
+    /* Loading dots */
+    .dot-flashing {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .dot-flashing span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #6366f1;
+      animation: dotFlash 1.2s infinite;
+    }
+    .dot-flashing span:nth-child(2) { animation-delay: 0.2s; }
+    .dot-flashing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotFlash {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.7); }
+
+    /* Ad placeholder */
+    .ad-placeholder {
+      border: 2px dashed rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.04);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: rgba(165, 180, 252, 0.5);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color 0.2s;
+    }
+    .ad-placeholder:hover { border-color: rgba(99, 102, 241, 0.5); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .email-display { font-size: 13px; }
+    }
+  </style>
+</head>
+<body class="relative overflow-x-hidden">
+
+  <!-- Background orbs -->
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+
+  <div class="relative z-10 min-h-screen flex flex-col">
+
+    <!-- ═══════════════════════════════════════════
+         HEADER
+    ════════════════════════════════════════════ -->
+    <header class="glass sticky top-0 z-50 border-b border-white/10">
+      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl btn-primary flex items-center justify-center text-xl shadow-lg">
+            📧
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-800 font-bold text-white leading-tight tracking-tight">
+              Gulberg AI Temp Mail
+            </h1>
+            <p class="text-xs text-indigo-300/70 hidden sm:block">Instant · Private · Disposable</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Countdown timer -->
+          <div class="flex items-center gap-1.5 glass-inner rounded-lg px-2.5 py-1.5" title="Auto-refresh countdown">
+            <svg width="20" height="20" viewBox="0 0 36 36" class="flex-shrink-0">
+              <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(99,102,241,0.2)" stroke-width="3"/>
+              <circle id="countdownRing" class="countdown-ring" cx="18" cy="18" r="16"
+                fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <span id="countdownText" class="text-xs font-mono text-indigo-300 w-5 text-right">10</span>
+          </div>
+          <div class="hidden sm:block w-px h-6 bg-white/10"></div>
+          <span id="statusDot" class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-slate-500 inline-block" id="statusIndicator"></span>
+            <span id="statusLabel">Idle</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         AD BANNER — TOP (below header)
+    ════════════════════════════════════════════ -->
+    <div class="max-w-4xl mx-auto w-full px-4 pt-4">
+      <!-- Insert Ad Banner Code Here -->
+      <div class="ad-placeholder h-16 sm:h-20" id="adTop">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        <span>Advertisement · 728×90 — Replace this div with your ad script</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+    ════════════════════════════════════════════ -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-6 space-y-5 animate-fade-in">
+
+      <!-- ── Email Generator Card ── -->
+      <div class="glass rounded-2xl p-5 sm:p-7 space-y-5">
+        <div class="flex items-center gap-2.5 mb-1">
+          <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow shadow-[0_0_8px_#4ade80]"></div>
+          <span class="text-sm font-semibold text-green-300">Active Temporary Address</span>
+        </div>
+
+        <!-- Email display + copy -->
+        <div class="glass-dark rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div class="flex-1 min-w-0">
+            <div id="emailDisplay" class="email-display select-all">
+              <span class="dot-flashing"><span></span><span></span><span></span></span>
+            </div>
+          </div>
+          <div class="flex gap-2 flex-shrink-0 w-full sm:w-auto">
+            <div class="relative flex-1 sm:flex-none">
+              <button id="copyBtn"
+                onclick="copyEmail()"
+                class="btn-primary w-full sm:w-auto text-white text-sm font-semibold px-4 py-2.5 rounded-lg flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+              <div class="copy-tooltip" id="copyTooltip">✓ Copied!</div>
+            </div>
+            <button onclick="generateNewEmail()"
+              title="Generate new address"
+              class="btn-secondary text-white text-sm font-semibold px-3 py-2.5 rounded-lg flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              <span class="hidden sm:inline">New</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Info row -->
+        <div class="flex flex-wrap gap-3 text-xs text-slate-400">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            No signup required
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Auto-refreshes every 10 seconds
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            Powered by mail.tm
+          </span>
+        </div>
+      </div>
+
+      <!-- ── Inbox Card ── -->
+      <div class="glass rounded-2xl overflow-hidden">
+        <!-- Inbox header -->
+        <div class="px-5 sm:px-7 py-4 border-b border-white/08 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+            </svg>
+            <h2 class="text-base font-semibold text-white">Inbox</h2>
+            <span id="messageCount" class="badge bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">0</span>
+          </div>
+          <button onclick="checkEmails(true)"
+            id="refreshBtn"
+            class="btn-secondary text-white text-sm font-medium px-3.5 py-2 rounded-lg flex items-center gap-2">
+            <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Inbox list -->
+        <div id="inboxContainer" class="divide-y divide-white/05 min-h-[200px]">
+          <div class="flex flex-col items-center justify-center py-16 gap-3 text-center" id="inboxEmpty">
+            <div class="w-16 h-16 rounded-2xl glass-inner flex items-center justify-center text-3xl">📭</div>
+            <p class="text-slate-400 font-medium">No messages yet...</p>
+            <p class="text-slate-500 text-sm max-w-xs">Emails sent to your address will appear here automatically.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════
+         AD BANNER — BOTTOM (above footer)
+    ════════════════════════════════════════════ -->
+    <div class="max-w-4xl mx-auto w-full px-4 pb-4">
+      <!-- Insert Ad Banner Code Here -->
+      <div class="ad-placeholder h-16 sm:h-20" id="adBottom">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        <span>Advertisement · 728×90 — Replace this div with your ad script</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+    ════════════════════════════════════════════ -->
+    <footer class="glass border-t border-white/08 mt-auto">
+      <div class="max-w-4xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-500">
+        <div class="flex items-center gap-2">
+          <span>📧</span>
+          <span class="font-semibold text-slate-400">Gulberg AI Temp Mail</span>
+          <span>· Free &amp; Private Disposable Email</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span>Powered by <a href="https://mail.tm" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 transition-colors">mail.tm</a></span>
+          <span>&copy; <span id="currentYear"></span></span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       EMAIL READ MODAL
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="emailModal" onclick="closeModalOnBackdrop(event)">
+    <div class="glass rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+      <!-- Modal header -->
+      <div class="px-5 py-4 border-b border-white/10 flex items-start gap-3">
+        <button onclick="closeModal()"
+          class="btn-secondary text-white text-sm font-medium px-3 py-2 rounded-lg flex items-center gap-1.5 flex-shrink-0 mt-0.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span class="hidden sm:inline">Back</span>
+        </button>
+        <div class="flex-1 min-w-0">
+          <h3 id="modalSubject" class="font-semibold text-white text-base leading-snug truncate"></h3>
+          <div class="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-xs text-slate-400">
+            <span>From: <span id="modalFrom" class="text-slate-300"></span></span>
+            <span id="modalDate" class="text-slate-500"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Modal body -->
+      <div class="flex-1 overflow-y-auto p-5">
+        <div id="modalBody" class="email-body-container">
+          <div class="flex items-center justify-center py-8 gap-2 text-slate-400">
+            <div class="dot-flashing"><span></span><span></span><span></span></div>
+            <span>Loading email...</span>
+          </div>
+        </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="px-5 py-3 border-t border-white/08 flex justify-end">
+        <button onclick="closeModal()"
+          class="btn-danger text-white text-sm font-medium px-4 py-2 rounded-lg">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       JAVASCRIPT — All vanilla, no dependencies
+  ════════════════════════════════════════════ -->
+  <script>
+    // ──────────────────────────────────────────────
+    // State  (mail.tm — free API with full CORS support)
+    // ──────────────────────────────────────────────
+    const MAILTM = 'https://api.mail.tm';
+    let currentEmail    = '';
+    let currentPassword = '';
+    let currentToken    = '';
+    let messages        = [];
+    let refreshInterval   = null;
+    let countdownInterval = null;
+    let countdownValue    = 10;
+    let isRefreshing      = false;
+
+    // ──────────────────────────────────────────────
+    // Init
+    // ──────────────────────────────────────────────
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', () => { generateNewEmail(); });
+
+    // ──────────────────────────────────────────────
+    // Helpers
+    // ──────────────────────────────────────────────
+    function randomStr(len = 10) {
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    }
+
+    async function tmFetch(path, opts = {}) {
+      const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+      if (currentToken && !headers['Authorization']) headers['Authorization'] = `Bearer ${currentToken}`;
+      const res = await fetch(`${MAILTM}${path}`, { ...opts, headers });
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`mail.tm ${path} → ${res.status}: ${body}`);
+      }
+      return res.json();
+    }
+
+    // ──────────────────────────────────────────────
+    // Email Generation
+    // ──────────────────────────────────────────────
+    async function generateNewEmail() {
+      stopAutoRefresh();
+      setStatus('generating', 'Generating…');
+      setEmailDisplay(null);
+
+      try {
+        // 1. Get available domains
+        const { 'hydra:member': domains } = await tmFetch('/domains', { headers: {} });
+        if (!domains || domains.length === 0) throw new Error('No domains available');
+        const domain = domains[Math.floor(Math.random() * domains.length)].domain;
+
+        // 2. Create account
+        const login    = randomStr(10);
+        const password = randomStr(16);
+        const address  = `${login}@${domain}`;
+
+        await tmFetch('/accounts', {
+          method: 'POST',
+          headers: {},
+          body: JSON.stringify({ address, password }),
+        });
+
+        // 3. Get auth token
+        const { token } = await tmFetch('/token', {
+          method: 'POST',
+          headers: {},
+          body: JSON.stringify({ address, password }),
+        });
+
+        currentEmail    = address;
+        currentPassword = password;
+        currentToken    = token;
+
+        setEmailDisplay(address);
+        clearInbox();
+        await checkEmails(false);
+        startAutoRefresh();
+        setStatus('ok', 'Live');
+      } catch (err) {
+        console.error('Failed to generate email:', err);
+        setEmailDisplay('⚠ Failed to generate — retrying…');
+        setStatus('error', 'Error');
+        setTimeout(generateNewEmail, 4000);
+      }
+    }
+
+    // ──────────────────────────────────────────────
+    // Inbox Check
+    // ──────────────────────────────────────────────
+    async function checkEmails(manual = false) {
+      if (!currentToken) return;
+      if (isRefreshing) return;
+
+      isRefreshing = true;
+      const btn  = document.getElementById('refreshBtn');
+      const icon = document.getElementById('refreshIcon');
+      icon.classList.add('animate-spin');
+      btn.disabled = true;
+
+      try {
+        const data = await tmFetch('/messages?page=1');
+        messages = data['hydra:member'] || [];
+        renderInbox(messages);
+        document.getElementById('messageCount').textContent = messages.length;
+        if (manual) resetCountdown();
+      } catch (err) {
+        console.error('Failed to fetch messages:', err);
+        if (manual) showToast('⚠ Failed to refresh. Check your connection.', 'error');
+      } finally {
+        icon.classList.remove('animate-spin');
+        btn.disabled = false;
+        isRefreshing = false;
+      }
+    }
+
+    // ──────────────────────────────────────────────
+    // Render Inbox
+    // ──────────────────────────────────────────────
+    function renderInbox(msgs) {
+      const container = document.getElementById('inboxContainer');
+      const empty     = document.getElementById('inboxEmpty');
+
+      if (!msgs || msgs.length === 0) {
+        container.innerHTML = '';
+        container.appendChild(empty);
+        empty.style.display = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      container.innerHTML = msgs.map(msg => {
+        const fromAddr = msg.from?.address || msg.from || '?';
+        const subject  = msg.subject || '(no subject)';
+        const date     = msg.createdAt || msg.date || '';
+        return `
+          <div class="inbox-row unread px-5 sm:px-7 py-4 flex items-start gap-4"
+               onclick="readEmail('${escapeHtml(msg.id)}')" role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter')readEmail('${escapeHtml(msg.id)}')">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0 mt-0.5"
+                 style="background:${hashColor(fromAddr)}">
+              ${getInitial(fromAddr)}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2">
+                <span class="font-semibold text-white text-sm truncate">${escapeHtml(fromAddr)}</span>
+                <span class="text-xs text-slate-500 flex-shrink-0 whitespace-nowrap">${formatDate(date)}</span>
+              </div>
+              <p class="text-sm text-slate-300 font-medium truncate mt-0.5">${escapeHtml(subject)}</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-600 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ──────────────────────────────────────────────
+    // Read Email (Modal)
+    // ──────────────────────────────────────────────
+    async function readEmail(id) {
+      openModal('Loading…', '', '', null);
+
+      try {
+        const msg = await tmFetch(`/messages/${id}`);
+        const fromAddr = msg.from?.address || msg.from || '';
+        const body = msg.html?.[0]
+          ? sanitizeHtml(msg.html[0])
+          : (msg.text
+              ? `<pre style="white-space:pre-wrap;word-break:break-word;font-family:inherit">${escapeHtml(msg.text)}</pre>`
+              : '<em style="color:#94a3b8">No content</em>');
+
+        openModal(msg.subject || '(no subject)', fromAddr, msg.createdAt, body);
+      } catch (err) {
+        console.error('Failed to read message:', err);
+        document.getElementById('modalBody').innerHTML =
+          '<p class="text-red-400 text-center py-8">⚠ Failed to load email. Please try again.</p>';
+      }
+    }
+
+    function openModal(subject, from, date, body) {
+      document.getElementById('modalSubject').textContent = subject;
+      document.getElementById('modalFrom').textContent    = from;
+      document.getElementById('modalDate').textContent    = date ? formatDate(date) : '';
+      document.getElementById('modalBody').innerHTML = body
+        ? `<div>${body}</div>`
+        : `<div class="flex items-center justify-center py-8 gap-2 text-slate-400">
+             <div class="dot-flashing"><span></span><span></span><span></span></div>
+             <span>Loading email…</span>
+           </div>`;
+      document.getElementById('emailModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('emailModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target === document.getElementById('emailModal')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ──────────────────────────────────────────────
+    // Copy Email
+    // ──────────────────────────────────────────────
+    function copyEmail() {
+      if (!currentEmail) return;
+      const showTip = () => {
+        const tooltip = document.getElementById('copyTooltip');
+        tooltip.classList.add('show');
+        setTimeout(() => tooltip.classList.remove('show'), 2000);
+      };
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(currentEmail).then(showTip).catch(() => fallbackCopy(showTip));
+      } else {
+        fallbackCopy(showTip);
+      }
+    }
+
+    function fallbackCopy(cb) {
+      const ta = document.createElement('textarea');
+      ta.value = currentEmail;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e){}
+      document.body.removeChild(ta);
+    }
+
+    // ──────────────────────────────────────────────
+    // Auto-Refresh + Countdown
+    // ──────────────────────────────────────────────
+    function startAutoRefresh() {
+      stopAutoRefresh();
+      resetCountdown();
+      refreshInterval   = setInterval(() => { checkEmails(false); resetCountdown(); }, 10000);
+      countdownInterval = setInterval(tickCountdown, 1000);
+    }
+
+    function stopAutoRefresh() {
+      clearInterval(refreshInterval);
+      clearInterval(countdownInterval);
+    }
+
+    function resetCountdown() {
+      countdownValue = 10;
+      updateCountdownUI();
+    }
+
+    function tickCountdown() {
+      countdownValue = Math.max(0, countdownValue - 1);
+      updateCountdownUI();
+    }
+
+    function updateCountdownUI() {
+      document.getElementById('countdownText').textContent = countdownValue;
+      const pct    = countdownValue / 10;
+      const offset = 100 - (pct * 100);
+      document.getElementById('countdownRing').style.strokeDashoffset = offset;
+    }
+
+    // ──────────────────────────────────────────────
+    // UI Helpers
+    // ──────────────────────────────────────────────
+    function setEmailDisplay(email) {
+      const el = document.getElementById('emailDisplay');
+      if (!email) {
+        el.innerHTML = '<span class="dot-flashing"><span></span><span></span><span></span></span>';
+      } else {
+        el.textContent = email;
+      }
+    }
+
+    function clearInbox() {
+      const container = document.getElementById('inboxContainer');
+      container.innerHTML = '';
+      const empty = document.getElementById('inboxEmpty');
+      if (empty) { empty.style.display = ''; container.appendChild(empty); }
+      document.getElementById('messageCount').textContent = '0';
+    }
+
+    function setStatus(type, label) {
+      const indicator = document.getElementById('statusIndicator');
+      const labelEl   = document.getElementById('statusLabel');
+      labelEl.textContent = label;
+      const colors = { ok: 'bg-green-400', error: 'bg-red-400', generating: 'bg-yellow-400' };
+      indicator.className = `w-2 h-2 rounded-full inline-block ${colors[type] || 'bg-slate-500'}`;
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.createElement('div');
+      const colors = { info: '#6366f1', error: '#ef4444', success: '#4ade80' };
+      toast.style.cssText = `
+        position:fixed;bottom:24px;right:24px;z-index:9999;
+        background:rgba(15,12,41,0.95);border:1px solid ${colors[type] || colors.info};
+        color:#e2e8f0;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:500;
+        box-shadow:0 8px 32px rgba(0,0,0,0.4);backdrop-filter:blur(12px);
+        transform:translateY(12px);opacity:0;transition:all 0.3s;max-width:320px;
+      `;
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => { toast.style.transform = 'translateY(0)'; toast.style.opacity = '1'; });
+      setTimeout(() => {
+        toast.style.transform = 'translateY(12px)'; toast.style.opacity = '0';
+        setTimeout(() => { if (toast.parentNode) document.body.removeChild(toast); }, 300);
+      }, 3500);
+    }
+
+    // ──────────────────────────────────────────────
+    // Utilities
+    // ──────────────────────────────────────────────
+    function escapeHtml(str = '') {
+      return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function sanitizeHtml(html) {
+      const forbidden = /<(script|iframe|object|embed|form|input|button|link|meta)[^>]*>[\s\S]*?<\/\1>|<(script|iframe|object|embed|form|input|button|link|meta)[^>]*\/?>/gi;
+      const onEvents  = /\s+on\w+="[^"]*"/gi;
+      const jsProto   = /href\s*=\s*["']?\s*javascript:/gi;
+      return html.replace(forbidden, '').replace(onEvents, '').replace(jsProto, 'href="about:blank"');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      try {
+        const d = new Date(dateStr);
+        const now = new Date();
+        const diff = now - d;
+        if (diff < 60000)    return 'Just now';
+        if (diff < 3600000)  return `${Math.floor(diff/60000)}m ago`;
+        if (diff < 86400000) return `${Math.floor(diff/3600000)}h ago`;
+        return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      } catch { return String(dateStr); }
+    }
+
+    function getInitial(from = '') {
+      const clean = String(from).replace(/<.*?>/, '').trim();
+      return (clean[0] || '?').toUpperCase();
+    }
+
+    function hashColor(str = '') {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 55%, 28%)`;
+    }
+  </script>
+</body>
+</html>

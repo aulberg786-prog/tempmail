@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "unMJ2fJR7ZvXCsWOF4G0i"
+uri = "file://gulberg-ai-temp-mail.html"
+type = "unspecified"
+title = "gulberg-ai-temp-mail.html — Standalone file for GitHub Pages / Netlify"
